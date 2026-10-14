@@ -1,0 +1,151 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ExamGuard | Device Monitoring</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="ExamGuard home">
+        <span class="brand-mark">EG</span>
+        <span class="brand-name">ExamGuard <span>LOCAL MONITOR</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#devices" class="active">Device monitor</a>
+        <a href="#comparison">Scan comparison</a>
+      </nav>
+      <div class="local-status"><span class="status-indicator"></span> Local service</div>
+    </header>
+
+    <main id="top" class="main">
+      <section class="page-heading" id="overview">
+        <div>
+          <p class="eyebrow">BLUETOOTH LOW ENERGY / LIVE DISCOVERY</p>
+          <h1>Device monitor</h1>
+          <p class="subhead">Nearby BLE advertisements observed by this computer.</p>
+        </div>
+        <div class="threshold-note">Signal bands are initial test thresholds</div>
+      </section>
+
+      <aside class="responsible-use" aria-label="Privacy and interpretation notice">
+        <span class="notice-rule"></span>
+        <p><strong>Interpret with care.</strong> RSSI indicates received signal strength, not exact physical distance. Walls, hardware and interference affect readings. A detected device does not identify its owner or prove cheating; human verification is required.</p>
+      </aside>
+
+      <section id="devices" class="device-section" aria-labelledby="device-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">MONITOR</p>
+            <h2 id="device-heading">Nearby device signals</h2>
+          </div>
+          <span id="scanMeta" class="scan-meta" role="status" aria-live="polite">No successful scan yet</span>
+        </div>
+
+        <div class="summary-strip" aria-label="Latest scan device counts">
+          <div class="summary-item"><span>Discovered</span><strong id="totalCount">—</strong></div>
+          <div class="summary-item"><span>Near / Strong</span><strong id="nearCount">—</strong></div>
+          <div class="summary-item"><span>Medium</span><strong id="mediumCount">—</strong></div>
+          <div class="summary-item"><span>Far / Weak</span><strong id="farCount">—</strong></div>
+          <div class="summary-item"><span>Unknown</span><strong id="unknownCount">—</strong></div>
+        </div>
+
+        <div class="table-toolbar">
+          <button id="scanBtn" class="primary-btn" type="button">Start 15-second scan</button>
+          <div class="table-controls">
+            <label for="signalFilter">Signal</label>
+            <select id="signalFilter">
+              <option>All signals</option>
+              <option>Near / Strong</option>
+              <option>Medium</option>
+              <option>Far / Weak</option>
+              <option>Unknown RSSI</option>
+            </select>
+            <a id="exportBtn" class="export-link disabled" href="#" aria-disabled="true">Export CSV</a>
+          </div>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Discovered Bluetooth devices" tabindex="0">
+          <table aria-busy="false">
+            <thead>
+              <tr>
+                <th scope="col">DEVICE</th>
+                <th scope="col">BLE ADDRESS</th>
+                <th id="rssiHeading" scope="col">LIVE RSSI</th>
+                <th scope="col">RECENT READINGS</th>
+                <th scope="col">LAST SEEN</th>
+                <th scope="col">SIGNAL CLASSIFICATION</th>
+              </tr>
+            </thead>
+            <tbody id="deviceRows">
+              <tr><td colspan="6" class="empty">No scan results yet. Start a 15-second scan to begin.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span id="visibleCount">0 devices shown</span>
+          <span>RSSI values shown in dBm</span>
+        </div>
+      </section>
+
+      <section class="windows-section" aria-labelledby="windows-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">WINDOWS DEVICE ENUMERATION</p>
+            <h2 id="windows-heading">Connected devices not matched to BLE</h2>
+            <p class="section-description">Windows-reported connected devices are kept separate unless a reliable address or shared endpoint-container match exists.</p>
+          </div>
+          <span id="windowsCheckedAt" class="scan-meta">Not checked yet</span>
+        </div>
+        <p id="windowsDeviceStatus" class="windows-status" role="status" aria-live="polite">Windows enumeration has not run.</p>
+        <ul id="windowsDeviceRows" class="windows-device-list" aria-label="Windows connected devices not matched to BLE"></ul>
+      </section>
+
+      <section class="history-section" id="comparison" aria-labelledby="comparison-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">HISTORY</p>
+            <h2 id="comparison-heading">Latest scan comparison</h2>
+            <p class="section-description">Changes between the two most recent successful scans.</p>
+          </div>
+          <button id="compareBtn" class="secondary-btn" type="button">Refresh comparison</button>
+        </div>
+
+        <div class="scan-pair" aria-label="Scans being compared">
+          <div>
+            <span>PREVIOUS SCAN</span>
+            <strong id="previousScanTime">No previous scan</strong>
+            <small id="previousScanCount">— devices</small>
+          </div>
+          <div>
+            <span>LATEST SCAN</span>
+            <strong id="currentScanTime">No successful scan</strong>
+            <small id="currentScanCount">— devices</small>
+          </div>
+        </div>
+
+        <div class="compare-totals">
+          <div><span>Observed in both</span><strong id="commonCount">—</strong></div>
+          <div><span>Newly observed</span><strong id="newCount">—</strong></div>
+          <div><span>Not observed now</span><strong id="missingCount">—</strong></div>
+        </div>
+
+        <div id="comparisonDetails" class="comparison-details" aria-live="polite">Run at least two successful scans to compare results.</div>
+        <p class="comparison-note">Not observed in a scan does not mean a device has left the area. BLE visibility can vary between scans.</p>
+      </section>
+
+      <footer>
+        <span>EXAMGUARD / LOCAL PROTOTYPE</span>
+        <span>Bluetooth LE discovery · Human verification required</span>
+      </footer>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
